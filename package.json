@@ -1,0 +1,24 @@
+{
+  "name": "fitlife",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "prisma": "^6.0.1",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "sucrase": "^3.35.0"
+  }
+}

@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  email    String  @unique
+  senha    String
+  tipo     String  @default("Aluno") // Can be 'Admin', 'Instrutor', 'Aluno'
+  Aluno    Aluno[]
+  Instrutor Instrutor?
+}
+
+model Aluno {
+  id           Int            @id @default(autoincrement())
+  usuarioId    Int            @unique
+  objetivos    String?
+  idade        Int?
+  planoAtual   String?
+  Usuario      Usuario        @relation(fields: [usuarioId], references: [id])
+  Frequencias  Frequencia[]
+  Pagamentos   Pagamento[]
+  PlanoTreinos AlunoPlanoTreino[]
+}
+
+
+model Instrutor {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int      @unique
+  especialidade String?
+  Usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model PlanoTreino {
+  id          Int            @id @default(autoincrement())
+  nome        String
+  descricao   String?
+  dataCriacao DateTime       @default(now())
+  alunos      AlunoPlanoTreino[]
+}
+
+model AlunoPlanoTreino {
+  id             Int          @id @default(autoincrement())
+  alunoId        Int
+  planoTreinoId  Int
+
+  Aluno          Aluno        @relation(fields: [alunoId], references: [id])
+  PlanoTreino    PlanoTreino  @relation(fields: [planoTreinoId], references: [id])
+
+  @@unique([alunoId, planoTreinoId])
+}
+
+model Frequencia {
+  id        Int      @id @default(autoincrement())
+  alunoId   Int
+  data      DateTime
+  status    Boolean  @default(true)
+  Aluno     Aluno    @relation(fields: [alunoId], references: [id])
+}
+
+model Pagamento {
+  id             Int      @id @default(autoincrement())
+  alunoId        Int
+  valor          Float
+  status         Boolean  @default(false) // false = Pendente, true = Pago
+  dataVencimento DateTime
+  Aluno          Aluno    @relation(fields: [alunoId], references: [id])
+}
+
